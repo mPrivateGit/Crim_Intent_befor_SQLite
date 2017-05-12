@@ -1,10 +1,12 @@
 package com.example.aprivate.criminalintent;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,12 +37,30 @@ public class CrimeListFragment extends Fragment {
         return view;
     }
 
-    private void updateUI() {
-        CrimeLab crimeLab = CrimeLab.get(getActivity());
-        List<Crime> crimes = crimeLab.getCrimes();
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
 
-        mAdapter = new CrimeAdapter(crimes);
-        mCrimeRecyclerView.setAdapter(mAdapter);
+    private void updateUI() {
+        if (mAdapter == null) {
+            CrimeLab crimeLab = CrimeLab.get(getActivity());
+            List<Crime> crimes = crimeLab.getCrimes();
+            mAdapter = new CrimeAdapter(crimes, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = mCrimeRecyclerView.getChildPosition(v);
+                    Toast.makeText(getActivity(),
+                            " clicked: "+position, Toast.LENGTH_SHORT).show();
+                }
+            });
+            mCrimeRecyclerView.setAdapter(mAdapter);
+        } else {
+            mAdapter.notifyDataSetChanged();
+        }
+
+
     }
 
 
@@ -70,15 +90,20 @@ public class CrimeListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Toast.makeText(getActivity(),
-                    mCrime.getmTitle() + " clicked!", Toast.LENGTH_SHORT).show();
+            Intent intent = CrimeActivity.newIntent(getActivity(),
+                    mCrime.getmId());
+            startActivity(intent);
         }
     }
-    private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder> {
+    private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder> implements View.OnClickListener {
 
         private List<Crime> mCrimes;
-        public CrimeAdapter(List<Crime> crimes) {
+        private RecyclerView recyclerView;
+        private View.OnClickListener mListener;
+
+        public CrimeAdapter(List<Crime> crimes, View.OnClickListener listener) {
             mCrimes = crimes;
+            mListener = listener;
         }
 
         @Override
@@ -86,7 +111,7 @@ public class CrimeListFragment extends Fragment {
 
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
             View view = layoutInflater.inflate(R.layout.list_item_crime, parent, false);
-
+            view.setOnClickListener(mListener);
             return new CrimeHolder(view);
 
         }
@@ -100,6 +125,23 @@ public class CrimeListFragment extends Fragment {
         @Override
         public int getItemCount() {
             return mCrimes.size();
+        }
+
+        @Override
+        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+            super.onAttachedToRecyclerView(recyclerView);
+            this.recyclerView = recyclerView;
+        }
+
+        @Override
+        public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+            super.onDetachedFromRecyclerView(recyclerView);
+            this.recyclerView = null;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Log.d("Adapter", "Item position: " + recyclerView.getChildPosition(v));
         }
     }
 }
