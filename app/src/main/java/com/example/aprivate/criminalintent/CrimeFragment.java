@@ -20,8 +20,6 @@ import java.util.Date;
 import java.util.UUID;
 
 
-
-
 public class CrimeFragment extends Fragment {
 
     private static final String ARG_CRIME_ID = "crime_id";
@@ -34,6 +32,7 @@ public class CrimeFragment extends Fragment {
     private EditText mTitleField;
     private Button mDateButton;
     private CheckBox mSolvedCheckBox;
+    private Button mDeleteButton;
 
 
     public static CrimeFragment newInstance(UUID crimeId) {
@@ -95,6 +94,23 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mCrime.setmSolved(isChecked);
+            }
+        });
+
+        mDeleteButton = (Button)v.findViewById(R.id.mButtonDelete);
+        mDeleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
+                for (int i=0;i<CrimeLab.sCrimeLab.getCrimes().size();i++){
+                    if (CrimeLab.sCrimeLab.getCrimes().get(i).getmId()==crimeId) {
+                        CrimeLab.sCrimeLab.getCrimes().remove(i);
+                        break;
+                    }
+                }
+                Intent i = new Intent(getContext(),CrimeListActivity.class);
+                startActivity(i);
+
             }
         });
 

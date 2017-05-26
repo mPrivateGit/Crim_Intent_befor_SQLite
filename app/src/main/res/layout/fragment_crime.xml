@@ -37,4 +37,12 @@
         android:layout_marginRight="16dp"
         android:text="@string/crime_solved_label"/>
 
+    <Button
+        android:id="@+id/mButtonDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="bottom"
+        android:text="@string/delete_button" />
+
 </LinearLayout>

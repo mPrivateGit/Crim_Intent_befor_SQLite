@@ -39,12 +39,10 @@ public class CrimeListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
         if (savedInstanceState != null) {
             mSubtitleVisible = savedInstanceState.getBoolean
                     (SAVED_SUBTITLE_VISIBLE);
         }
-
         View view = inflater.inflate(R.layout.fragment_crime_list, container,
                 false);
         mCrimeRecyclerView = (RecyclerView) view.findViewById(R.id.crime_recycler_view);
@@ -124,7 +122,8 @@ public class CrimeListFragment extends Fragment {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         int crimeCount = crimeLab.getCrimes().size();
         @SuppressLint("StringFormatMatches") String subtitle =
-                getString(R.string.subtitle_format, crimeCount);
+              getResources().getQuantityString(R.plurals.subtitle_plural,
+                      crimeCount, crimeCount);
 
         if (!mSubtitleVisible) {
             subtitle = null;
@@ -178,12 +177,10 @@ public class CrimeListFragment extends Fragment {
 
         @Override
         public CrimeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
             View view = layoutInflater.inflate(R.layout.list_item_crime, parent, false);
             view.setOnClickListener(mListener);
             return new CrimeHolder(view);
-
         }
 
         @Override

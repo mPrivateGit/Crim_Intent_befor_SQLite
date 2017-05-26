@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.UUID;
 
 
-
 //Singleton
 public class CrimeLab {
 
@@ -43,7 +42,6 @@ public class CrimeLab {
     public void addCrime(Crime c) {
         mCrimes.add(c);
     }
-
 }
 
 
