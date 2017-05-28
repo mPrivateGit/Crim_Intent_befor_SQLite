@@ -29,6 +29,8 @@ public class CrimeListFragment extends Fragment {
     private CrimeAdapter mAdapter;
     private boolean mSubtitleVisible;
 
+    private List<Crime> mGlobalCrimes; // это костыль и даже он не работает :(
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +81,7 @@ public class CrimeListFragment extends Fragment {
             });
             mCrimeRecyclerView.setAdapter(mAdapter);
         } else {
+            mAdapter.setCrimes(mGlobalCrimes);
             mAdapter.notifyDataSetChanged();
         }
 
@@ -134,7 +137,6 @@ public class CrimeListFragment extends Fragment {
     }
 
     private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-
         private Crime mCrime;
 
         private TextView mTitleTextView;
@@ -170,9 +172,11 @@ public class CrimeListFragment extends Fragment {
         private RecyclerView recyclerView;
         private View.OnClickListener mListener;
 
+
         public CrimeAdapter(List<Crime> crimes, View.OnClickListener listener) {
             mCrimes = crimes;
             mListener = listener;
+            mGlobalCrimes = crimes;
         }
 
         @Override
@@ -192,6 +196,10 @@ public class CrimeListFragment extends Fragment {
         @Override
         public int getItemCount() {
             return mCrimes.size();
+        }
+
+        public void setCrimes(List<Crime> crimes) {
+            mCrimes = crimes;
         }
 
         @Override

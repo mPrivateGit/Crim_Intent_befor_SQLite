@@ -12,13 +12,14 @@ public class Crime {
     private Date mDate;
     private boolean mSolved;
 
-
     public Crime(){
-        mId = UUID.randomUUID();
-        mDate = new Date();
+        this(UUID.randomUUID());
     }
 
-
+    public Crime(UUID id){
+        mId = id;
+        mDate = new Date();
+    }
 
     public UUID getmId() {
         return mId;
@@ -43,7 +44,6 @@ public class Crime {
         mSolved = solved;
     }
 
-
     String mDate() {
         String p = "EE, MMM dd, yyyy";
         SimpleDateFormat s = new SimpleDateFormat(p);
@@ -51,6 +51,4 @@ public class Crime {
         String date = s.format(mDate);
         return date;
     }
-
-
 }

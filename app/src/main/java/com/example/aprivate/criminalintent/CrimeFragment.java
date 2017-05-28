@@ -27,7 +27,6 @@ public class CrimeFragment extends Fragment {
 
     private static final int REQUEST_DATE = 0;
 
-
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
@@ -114,7 +113,6 @@ public class CrimeFragment extends Fragment {
             }
         });
 
-
         return v;
     }
 
@@ -133,5 +131,12 @@ public class CrimeFragment extends Fragment {
             mCrime.setmDate(date);
             updateDate();
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        CrimeLab.get(getActivity())
+                .updateCrime(mCrime);
     }
 }
