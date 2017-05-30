@@ -6,11 +6,11 @@ import java.util.UUID;
 
 
 public class Crime {
-
     private UUID mId;
     private String mTitle;
     private Date mDate;
     private boolean mSolved;
+    private String mSuspect;
 
     public Crime(){
         this(UUID.randomUUID());
@@ -42,6 +42,12 @@ public class Crime {
     }
     public void setmSolved(boolean solved) {
         mSolved = solved;
+    }
+    public String getmSuspect() {
+        return mSuspect;
+    }
+    public void setmSuspect(String mSuspect) {
+        this.mSuspect = mSuspect;
     }
 
     String mDate() {

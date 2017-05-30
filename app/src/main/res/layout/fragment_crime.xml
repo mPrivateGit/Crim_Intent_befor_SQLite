@@ -45,4 +45,22 @@
         android:gravity="bottom"
         android:text="@string/delete_button" />
 
+    <Button
+        android:id="@+id/crime_suspect"
+        android:text="@string/crime_suspect_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="36dp"
+        android:layout_marginRight="36dp"
+        android:layout_marginTop="15dp"/>
+
+    <Button
+        android:id="@+id/crime_report"
+        android:text="@string/crime_report_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="36dp"
+        android:layout_marginLeft="36dp"
+        android:layout_marginTop="10dp"/>
+
 </LinearLayout>
