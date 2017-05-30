@@ -57,4 +57,8 @@ public class Crime {
         String date = s.format(mDate);
         return date;
     }
+
+    public String getPhotoFilename() {
+        return "IMG_" + getmId().toString() + ".jpg";
+    }
 }
