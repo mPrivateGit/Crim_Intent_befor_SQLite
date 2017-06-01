@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,6 +25,9 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+
+import com.example.aprivate.criminalintent.database.CrimeBaseHelper;
+import com.example.aprivate.criminalintent.database.CrimeDbSchema;
 
 import java.io.File;
 import java.util.Date;
@@ -113,13 +117,17 @@ public class CrimeFragment extends Fragment {
         mDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
-                for (int i=0;i<CrimeLab.sCrimeLab.getCrimes().size();i++){
-                    if (CrimeLab.sCrimeLab.getCrimes().get(i).getmId()==crimeId) {
-                        CrimeLab.sCrimeLab.getCrimes().remove(i);
-                        break;
-                    }
-                }
+                CrimeBaseHelper mDbHelper = new CrimeBaseHelper(getContext());
+                SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+                String target = CrimeDbSchema.CrimeTable.Cols.UUID +
+                        " =" +
+                        "'" +
+                        mCrime.getmId().toString() +
+                        "'";
+
+                db.delete(CrimeDbSchema.CrimeTable.NAME, target, null);
+
                 Intent i = new Intent(getContext(),CrimeListActivity.class);
                 startActivity(i);
 
