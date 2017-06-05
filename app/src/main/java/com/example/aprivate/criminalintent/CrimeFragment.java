@@ -16,6 +16,7 @@ import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,11 +36,13 @@ import java.util.UUID;
 
 
 public class CrimeFragment extends Fragment {
+    private static final String TAG = ">>>>>>>>>>:";
     private static final String ARG_CRIME_ID = "crime_id";
     private static final String DIALOG_DATE = "DialogDate";
     private static final int REQUEST_DATE = 0;
     private static final int REQUEST_CONTACT = 1;
-    private static final int REQUEST_PHOTO= 2;
+    private static final int REQUEST_PHOTO = 2;
+    private static final int REQUEST_NUMBER = 3;
 
     private Crime mCrime;
     private EditText mTitleField;
@@ -51,6 +54,7 @@ public class CrimeFragment extends Fragment {
     private ImageButton mPhotoButton;
     private ImageView mPhotoView;
     private File mPhotoFile;
+    private Button mCalltoSuspect;
 
     public static CrimeFragment newInstance(UUID crimeId) {
         Bundle args = new Bundle();
@@ -130,7 +134,6 @@ public class CrimeFragment extends Fragment {
 
                 Intent i = new Intent(getContext(),CrimeListActivity.class);
                 startActivity(i);
-
             }
         });
 
@@ -155,9 +158,18 @@ public class CrimeFragment extends Fragment {
                 startActivityForResult(pickContact, REQUEST_CONTACT);
             }
         });
+
         if (mCrime.getmSuspect() != null) {
             mSuspectButton.setText(mCrime.getmSuspect());
         }
+
+        mCalltoSuspect = (Button) v.findViewById(R.id.call_suspect);
+        mCalltoSuspect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(pickContact, REQUEST_NUMBER);
+            }
+        });
 
         PackageManager packageManager = getActivity().getPackageManager();
         if (packageManager.resolveActivity(pickContact,
@@ -232,8 +244,12 @@ public class CrimeFragment extends Fragment {
         };
         // Выполнение запроса - contactUri здесь выполняет функции
         // условия "where"
-        Cursor c = getActivity().getContentResolver()
-                .query(contactUri, queryFields, null, null, null);
+        Cursor c = getContext().getContentResolver().query(
+                contactUri,
+                queryFields,
+                null,
+                null,
+                null);
             try {
                 // Проверка получения результатов
                 if (c.getCount() == 0) {
@@ -244,11 +260,28 @@ public class CrimeFragment extends Fragment {
                 String suspect = c.getString(0);
                 mCrime.setmSuspect(suspect);
                 mSuspectButton.setText(suspect);
+
             } finally {
                 c.close();
             }
         } else if (requestCode == REQUEST_PHOTO) {
             updatePhotoView();
+        } else if (requestCode == REQUEST_NUMBER && data != null){
+            Uri contactUri = data.getData();
+            Cursor pCur = getContext().getContentResolver().query(
+                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                    null,
+                    null,
+                    null,
+                    null);
+            if (pCur.getCount() > 0) {
+                while (pCur.moveToNext()) {
+                    String phone = pCur.getString(
+                            pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    Log.i(TAG, "phone=" + phone);
+                }
+            }
+            pCur.close();
         }
     }
 
