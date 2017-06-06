@@ -168,6 +168,12 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivityForResult(pickContact, REQUEST_NUMBER);
+                //todo я знаю как достать все контакты и их имена
+                 /**
+                  * Я могу достать все контакты и сравнить их с колбеком setPhoneNumber
+                  * а потом задать нужный мне номер
+                  */
+
             }
         });
 
@@ -237,6 +243,7 @@ public class CrimeFragment extends Fragment {
             updateDate();
         }  else if (requestCode == REQUEST_CONTACT && data != null) {
         Uri contactUri = data.getData();
+            Log.d(TAG, contactUri.toString());
         // Определение полей, значения которых должны быть
         // возвращены запросом.
         String[] queryFields = new String[] {
@@ -268,20 +275,22 @@ public class CrimeFragment extends Fragment {
             updatePhotoView();
         } else if (requestCode == REQUEST_NUMBER && data != null){
             Uri contactUri = data.getData();
+            Log.d(TAG, contactUri.toString());
+            String[] pro = new String[] {
+                    ContactsContract.CommonDataKinds.Phone.NUMBER
+            };
             Cursor pCur = getContext().getContentResolver().query(
-                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                    null,
+                   contactUri,
+                    pro,
                     null,
                     null,
                     null);
-            if (pCur.getCount() > 0) {
-                while (pCur.moveToNext()) {
-                    String phone = pCur.getString(
-                            pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    Log.i(TAG, "phone=" + phone);
-                }
+            try {
+                pCur.moveToFirst();
+
+            } finally {
+                pCur.close();
             }
-            pCur.close();
         }
     }
 
